@@ -1,0 +1,241 @@
+{% extends 'base.html' %} 
+{% load static %}
+
+{% block title %}My Booking History{% endblock %}
+
+{% block content %}
+<div class="history-container">
+    <h2 class="history-header">My Booking History</h2>
+    
+    {% if bookings %}
+        <p class="count-text">You have {{ bookings.count }} total bookings.</p>
+
+        <div class="table-responsive">
+            <table class="booking-table">
+                <thead>
+                    <tr>
+                        <th>Booking ID</th>
+                        <th>Route</th>
+                        <th>Date & Time</th>
+                        <th>Bus Info</th>
+                        <th>Seat</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for booking in bookings %}
+                    {# Safely check for related objects to prevent template crashes #}
+                    {% with trip=booking.trip %}
+                    {% with route=trip.route|default:None %}
+                    {% with bus=trip.bus|default:None %}
+                    
+                    <tr>
+                        <td data-label="Booking ID">#{{ booking.id }}</td>
+                        
+                        <td data-label="Route">
+                            {% if route %}
+                                {{ route.origin }} &rarr; {{ route.destination }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                        
+                        <td data-label="Date & Time">
+                            {% if trip %}
+                                <strong>{{ trip.departure_time|date:"D, d M, Y" }}</strong>
+                                <br>{{ trip.departure_time|date:"H:i A" }}
+                            {% else %}
+                                Trip Deleted
+                            {% endif %}
+                        </td>
+                        
+                        <td data-label="Bus Info">
+                            {% if bus %}
+                                {{ bus.name }} ({{ bus.bus_number }})
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                        
+                        <td data-label="Seat" class="seat-cell">{{ booking.seat_number }}</td>
+                        
+                        <td data-label="Status">
+                            <span class="status-badge 
+                                {% if booking.is_paid %}status-paid{% else %}status-pending{% endif %}">
+                                {% if booking.is_paid %}Paid & Confirmed{% else %}Payment Pending{% endif %}
+                            </span>
+                        </td>
+                        
+                        <td data-label="Action" class="action-cell">
+                            {% if not booking.is_paid %}
+                                <a href="{% url 'core:fake_payment' booking_id=booking.id %}" class="btn-cta btn-small">Pay Now</a>
+                            {% else %}
+                                <a href="{% url 'core:booking_confirmation' booking_id=booking.id %}" class="btn-small btn-view">E-Ticket</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                    {% endwith %}
+                    {% endwith %}
+                    {% endwith %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+    {% else %}
+        <div class="no-bookings">
+            <p>You have not made any bookings yet.</p>
+            <a href="{% url 'core:bus_list' %}" class="btn-cta">Start Booking Now</a>
+        </div>
+    {% endif %}
+
+</div>
+
+<style>
+/* --- Styles for the Table History View --- */
+.history-container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+.history-header {
+    text-align: center;
+    color: var(--primary-color, #ff5722);
+    margin-bottom: 30px;
+}
+
+/* Base Table Styling */
+.booking-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden; /* Ensures rounded corners apply to content */
+}
+
+.booking-table thead th {
+    background-color: var(--primary-color, #ff5722);
+    color: white;
+    font-weight: 600;
+    padding: 12px 15px;
+    text-align: left;
+    font-size: 0.9em;
+}
+
+.booking-table tbody tr {
+    border-bottom: 1px solid #e0e0e0;
+    transition: background-color 0.2s;
+}
+
+.booking-table tbody tr:hover {
+    background-color: #fff3e0; /* Light hover color */
+}
+
+.booking-table td {
+    padding: 12px 15px;
+    vertical-align: middle;
+    font-size: 0.9em;
+}
+
+/* Status Badges */
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.8em;
+    font-weight: bold;
+    display: inline-block;
+}
+.status-paid {
+    background-color: #d4edda;
+    color: #155724;
+}
+.status-pending {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+/* Specific Column Styling */
+.seat-cell {
+    font-weight: bold;
+    color: var(--accent-color, #007bff);
+}
+.action-cell {
+    text-align: center;
+}
+.action-cell a {
+    display: block;
+    margin: 5px 0;
+}
+
+/* Small Button Styling (reused from card version) */
+.btn-small {
+    padding: 6px 10px;
+    font-size: 0.8em;
+    text-decoration: none;
+    border-radius: 5px;
+    color: white;
+    display: inline-block;
+    min-width: 80px;
+    text-align: center;
+}
+.btn-cta {
+    background-color: var(--primary-color, #63d631);
+}
+.btn-view {
+    background-color: #6c757d;
+}
+
+/* --- Responsive Table Adjustments (Mobile View) --- */
+@media screen and (max-width: 800px) {
+    .booking-table thead {
+        display: none; /* Hide header row */
+    }
+    
+    .booking-table, .booking-table tbody, .booking-table tr, .booking-table td {
+        display: block;
+        width: 100%;
+    }
+    
+    .booking-table tr {
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .booking-table td {
+        text-align: right;
+        padding-left: 50%; /* Space for label */
+        position: relative;
+        border-bottom: 1px dotted #b1b3a7;
+    }
+    
+    .booking-table td:before {
+        /* Use the data-label attribute to display the column name */
+        content: attr(data-label);
+        position: absolute;
+        left: 15px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: bold;
+        text-align: left;
+        color: #7bcb26;
+    }
+    
+    .action-cell {
+        border-bottom: none;
+        text-align: center;
+        padding-top: 15px;
+    }
+    .action-cell a {
+        display: inline-block;
+        margin: 5px;
+    }
+}
+</style>
+{% endblock %}

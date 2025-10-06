@@ -1,0 +1,202 @@
+/* --- NEW: Global Variables (Good Practice) --- */
+:root {
+    --primary-color: #32dc84;      /* Greenish primary theme color */
+    --secondary-color: #1666b6;    /* Blue secondary theme color */
+    --accent-color: #ff5722;       /* Bright orange for CTAs/Header */
+    --text-dark: #333;
+    --text-light: #fff;
+    --bg-light: #f4f4f4;
+}
+
+/* --- NEW: Base Body Styles (Optional but recommended) --- */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+}
+
+/* --- 4. Main Header Styling (The Orange Header) --- */
+.main-header {
+    background-color: var(--accent-color, #ff5722); 
+    color: var(--text-light);
+    padding: 15px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.main-header .logo a {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: var(--text-light);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.main-header .logo a:hover {
+    color: #ffd1c2;
+}
+
+/* --- 5. Navigation Links inside the Header --- */
+.main-nav a {
+    color: var(--text-light);
+    text-decoration: none;
+    font-size: 1em;
+    padding: 10px 15px;
+    margin-left: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.main-nav a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: var(--text-light);
+}
+
+/* Style for the special Login/Sign Up buttons */
+.main-nav .btn-nav {
+    background-color: var(--primary-color);
+    color: var(--text-dark);
+    padding: 8px 15px;
+    font-weight: bold;
+}
+
+.main-nav .btn-nav.primary {
+    background-color: var(--secondary-color);
+    color: var(--text-light);
+}
+
+/* Hide the mobile toggle button on desktop */
+.menu-toggle {
+    display: none; 
+}
+
+
+/* --- 1. Hero Section (Includes missing styles for the main block) --- */
+.hero-section {
+    background: 
+        linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), 
+        url('../images/offer_bg.jpg') no-repeat center center/cover;
+    height: 70vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+    padding: 0 5%;
+}
+
+.hero-section h1 {
+    font-size: 3.5em;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+
+/* --- 2. CTA Button (Includes missing styles and animation) --- */
+@keyframes pulse {
+    0% { 
+        transform: scale(1); 
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); 
+    }
+    70% { 
+        transform: scale(1.05); 
+        box-shadow: 0 0 0 20px rgba(255, 255, 255, 0); 
+    }
+    100% { 
+        transform: scale(1); 
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); 
+    }
+}
+
+.btn-cta {
+    padding: 18px 40px;
+    background-color: var(--accent-color); /* Uses global accent color */
+    color: white;
+    border-radius: 50px;
+    text-decoration: none;
+    font-size: 1.3em;
+    font-weight: bold;
+    letter-spacing: 1px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    display: inline-block;
+    animation: pulse 2s infinite ease-in-out;
+    transition: background-color 0.3s;
+}
+
+.btn-cta:hover {
+    background-color: #e64a19;
+}
+
+
+/* --- 3. Feature Card Section (Includes missing styles) --- */
+.features-section {
+    padding: 50px 5%;
+    text-align: center;
+    background-color: var(--secondary-color, #1666b6);
+}
+
+.feature-grid {
+    display: flex;
+    justify-content: space-around;
+    gap: 5px;
+    margin-top: 5px;
+}
+
+.feature-card {
+    flex: 1;
+    background: var(--bg-light); /* Using global variable */
+    padding: 5px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.feature-card h3 {
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px) rotate(0deg);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15); 
+}
+
+
+/* --- RESPONSIVENESS (Crucial for Recruiter Impression) --- */
+@media (max-width: 768px) {
+    .hero-section {
+        height: 50vh;
+    }
+    .hero-section h1 {
+        font-size: 2em;
+    }
+    .btn-cta {
+        padding: 15px 30px;
+        font-size: 1.1em;
+    }
+    .feature-grid {
+        flex-direction: column;
+    }
+}
+
+
+/* --- 6. Footer Styling (Simplified) --- */
+.main-footer {
+    background-color: var(--primary-color, orange);
+    color: var(--bg-light);
+    text-align: center;
+    padding: 15px 5%;
+    font-size: 0.9em;
+    margin-top: 30px;
+}
+
+.main-footer p {
+    margin: 0;
+}

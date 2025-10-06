@@ -1,0 +1,212 @@
+{% extends 'base.html' %} 
+{% load static %}
+
+{% block title %}Bus Schedules - BusBuddy{% endblock %}
+
+{% block content %}
+<div class="schedule-container">
+    <h2 class="schedule-header">Available Trips & Schedules</h2>
+    
+    {% if trips %}
+        <p class="count-text">Found {{ trips.count }} buses for your journey.</p>
+
+        <div class="table-responsive">
+            <table class="trip-schedule-table">
+                <thead>
+                    <tr>
+                        <th>Route</th>
+                        <th>Bus Info</th>
+                        <th>Departure</th>
+                        <th>Arrival</th>
+                        <th>Price</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for trip in trips %}
+                    <tr>
+                        <td data-label="Route">
+                            <strong>{{ trip.route.origin }}</strong>
+                            <span class="arrow">→</span>
+                            <strong>{{ trip.route.destination }}</strong>
+                        </td>
+                        
+                        <td data-label="Bus Info">
+                            <div class="bus-details">
+                                <p class="bus-name">{{ trip.bus.name }}</p>
+                                <p class="bus-number">({{ trip.bus.bus_number }})</p>
+                                <p class="bus-duration">Est. Duration: ~8 hours</p> 
+                            </div>
+                        </td>
+                        
+                        <td data-label="Departure">
+                            <strong class="time-main">{{ trip.departure_time|date:"H:i A" }}</strong>
+                            <span class="date-sub">{{ trip.departure_time|date:"D, d M" }}</span>
+                        </td>
+                        
+                        <td data-label="Arrival">
+                            <strong class="time-main">{{ trip.arrival_time|date:"H:i A" }}</strong>
+                            <span class="date-sub">{{ trip.arrival_time|date:"D, d M" }}</span>
+                        </td>
+                        
+                        <td data-label="Price">
+                            <strong class="price-amount">${{ trip.price|floatformat:2 }}</strong>
+                        </td>
+                        
+                        <td data-label="Action">
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'core:book_trip' trip.id %}" class="btn-book-trip">Book Seat</a>
+                            {% else %}
+                                <a href="{% url 'login' %}?next={% url 'core:book_trip' trip.id %}" class="btn-book-trip disabled-btn">Login to Book</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="no-results">Sorry, no trips are available for this route yet.</p>
+    {% endif %}
+
+</div>
+
+<style>
+/* Schedule Specific Attractive CSS (Table Overhaul) */
+.schedule-container {
+    max-width: 1200px; /* Increased max width for table data */
+    margin: 40px auto;
+    padding: 0 20px;
+}
+.schedule-header {
+    text-align: center;
+    color: var(--primary-color, #32dc84); /* Use default if var not defined */
+    margin-bottom: 30px;
+}
+.count-text {
+    text-align: center;
+    color: #6c757d;
+    margin-bottom: 20px;
+}
+
+/* --- Table Styling --- */
+.table-responsive {
+    overflow-x: auto; /* Makes table scrollable on small screens */
+}
+.trip-schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden; /* Important for border-radius */
+}
+
+/* Table Header */
+.trip-schedule-table thead th {
+    background-color: var(--secondary-color, #1666b6);
+    color: white;
+    padding: 15px 10px;
+    text-align: left;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9em;
+}
+
+/* Table Body Rows */
+.trip-schedule-table tbody tr {
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.3s;
+}
+.trip-schedule-table tbody tr:hover {
+    background-color: #f8f8f8;
+}
+
+/* Table Data Cells */
+.trip-schedule-table tbody td {
+    padding: 15px 10px;
+    vertical-align: middle;
+    color: var(--text-dark, #333);
+    font-size: 0.95em;
+}
+
+/* Specific Cell Styles */
+.arrow { color: var(--accent-color, #ff5722); font-weight: 900; }
+.bus-name { font-weight: bold; margin-bottom: 2px; }
+.bus-number, .bus-duration { font-size: 0.8em; color: #6c757d; line-height: 1.2; }
+
+.time-main { font-size: 1.2em; font-weight: bold; display: block; }
+.date-sub { font-size: 0.8em; color: #8c8c8c; }
+.price-amount { font-size: 1.4em; font-weight: 900; color: #dc3545; }
+
+/* Booking Button (Reused styles) */
+.btn-book-trip {
+    display: inline-block;
+    padding: 8px 15px;
+    background-color: var(--primary-color, #32dc84);
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    font-size: 0.9em;
+}
+.btn-book-trip:hover {
+    background-color: #0056b3; /* Placeholder for a darker hover */
+}
+.disabled-btn {
+    background-color: #6c757d;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* --- Responsive Table (Mobile View) --- */
+@media (max-width: 768px) {
+    /* Force table to not be like a table */
+    .trip-schedule-table, .trip-schedule-table thead, .trip-schedule-table tbody, .trip-schedule-table th, .trip-schedule-table td, .trip-schedule-table tr {
+        display: block;
+    }
+    
+    /* Hide table headers (but not display: none;, for accessibility) */
+    .trip-schedule-table thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    
+    /* Simulate a card for each row */
+    .trip-schedule-table tr {
+        border: 1px solid #ccc;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Simulation of column headers for mobile */
+    .trip-schedule-table td {
+        border: none;
+        position: relative;
+        padding-left: 50% !important;
+        text-align: right !important;
+    }
+    
+    .trip-schedule-table td:before {
+        /* Now like a header for the data */
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        text-align: left;
+        font-weight: bold;
+        color: var(--secondary-color, #1666b6);
+    }
+
+    .bus-details, .time-main, .price-amount {
+        /* Ensure primary data stands out */
+        text-align: right !important;
+    }
+}
+</style>
+{% endblock %}

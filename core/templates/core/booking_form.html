@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Book Seat for {{ trip.route.origin }} to {{ trip.route.destination }}{% endblock %}
+
+{% block content %}
+<div class="booking-container">
+    <h2>Book Your Seat</h2>
+
+    <div class="trip-summary">
+        <h3>Trip: {{ trip.route.origin }} <span class="arrow">→</span> {{ trip.route.destination }}</h3>
+        <p>Bus: {{ trip.bus.name }} ({{ trip.bus.bus_number }})</p>
+        <p>Departure: <strong>{{ trip.departure_time|date:"D, d M, H:i A" }}</strong></p>
+        <p>Price per Seat: <strong>${{ trip.price|floatformat:2 }}</strong></p>
+    </div>
+
+    <div class="seat-selection-area">
+        <h4>Select Your Seat</h4>
+        <form method="post" action="{% url 'core:book_trip' trip.id %}" class="booking-form">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="seat">Enter Preferred Seat Number (e.g., A1, 10):</label>
+                <input type="text" id="seat" name="seat" required class="form-control" placeholder="e.g., 5B">
+            </div>
+
+            <p class="warning-text">
+                Note: Availability check is simulated. You will confirm and pay on the next screen.
+            </p>
+
+            <button type="submit" class="btn-cta">Proceed to Payment</button>
+        </form>
+    </div>
+
+</div>
+
+<style>
+    /* Basic styles to make the booking page look decent */
+    .booking-container {
+        max-width: 600px;
+        margin: 40px auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .trip-summary {
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef;
+        padding: 15px;
+        border-radius: 6px;
+        margin-bottom: 20px;
+    }
+    .trip-summary h3 {
+        color: var(--secondary-color, #1666b6);
+        margin-top: 0;
+        font-size: 1.4em;
+    }
+    .form-group {
+        margin-bottom: 20px;
+    }
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+    }
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+    .warning-text {
+        color: #ffc107;
+        font-style: italic;
+        margin-bottom: 25px;
+    }
+</style>
+{% endblock %}

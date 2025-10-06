@@ -1,0 +1,77 @@
+{% extends 'base.html' %} 
+
+{% block title %}Sign Up - BusBuddy{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Join BusBuddy - Create Account</h2>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    <ul class="errorlist">
+                        {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        {% endfor %}
+        
+        <button type="submit" class="btn-primary">Sign Up</button>
+    </form>
+    
+    <p class="mt-3">Already have an account? <a href="{% url 'login' %}">Login here</a>.</p>
+</div>
+
+<style>
+/* Add this attractive CSS (or link to your main style.css) */
+.form-container {
+    max-width: 450px;
+    margin: 50px auto;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background: #ffffff;
+}
+.form-container h2 {
+    text-align: center;
+    color: #007bff; /* BusBuddy blue */
+    margin-bottom: 25px;
+}
+.form-group {
+    margin-bottom: 15px;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    box-sizing: border-box; /* Crucial for padding/width calculation */
+}
+.btn-primary {
+    width: 100%;
+    padding: 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+</style>
+{% endblock %}

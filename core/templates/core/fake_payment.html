@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="payment-container">
+    <h2>Secure Payment (Demo)</h2>
+    
+    <p class="warning-message">
+        <i class="fas fa-exclamation-triangle"></i> This is a simulated payment page. No real transaction will occur.
+    </p>
+
+    <div class="payment-details">
+        <p class="amount-text">Total Amount:</p>
+        <strong class="total-amount">${{ amount|floatformat:2 }}</strong>
+    </div>
+
+    <form method="POST" action="{% url 'core:fake_payment' booking_id=booking.id %}" class="payment-form">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="card_number">Card Number (Demo: 4242...)</label>
+            <input 
+                type="text" 
+                id="card_number"
+                value="4242 4242 4242 4242" 
+                class="form-control" 
+                readonly 
+                disabled
+            >
+        </div>
+        
+        <button type="submit" class="btn-cta complete-btn">Complete Payment</button>
+    </form>
+</div>
+
+<style>
+/* ... (CSS from previous response) ... */
+</style>
+{% endblock %}

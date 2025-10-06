@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Booking Confirmed!{% endblock %}
+
+{% block content %}
+<div class="confirmation-container">
+    <div class="confirmation-header">
+        <i class="fas fa-check-circle success-icon"></i>
+        <h2>Booking Confirmed!</h2>
+        <p class="reference">Your Booking ID: <strong>#{{ booking.id }}</strong></p>
+    </div>
+
+    <div class="booking-details-card">
+        <h3>Trip Details</h3>
+
+        <div class="detail-row">
+            <span class="label">Route:</span>
+            <span class="value">{{ booking.trip.route.origin }} &rarr; {{ booking.trip.route.destination }}</span>
+        </div>
+
+        <div class="detail-row">
+            <span class="label">Departure:</span>
+            <span class="value">{{ booking.trip.departure_time|date:"D, d M, H:i A" }}</span>
+        </div>
+
+        <div class="detail-row">
+            <span class="label">Bus:</span>
+            <span class="value">{{ booking.trip.bus.name }} ({{ booking.trip.bus.bus_number }})</span>
+        </div>
+
+        <div class="detail-row highlight">
+            <span class="label">Seat Number:</span>
+            <span class="value seat-value">{{ booking.seat_number }}</span>
+        </div>
+    </div>
+
+    <div class="payment-summary-card">
+        <h3>Payment Summary</h3>
+        <div class="detail-row">
+            <span class="label">Total Paid:</span>
+            <span class="value price-value">${{ booking.trip.price|floatformat:2 }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="label">Payment Status:</span>
+            <span class="value status-paid">Confirmed & Paid</span>
+        </div>
+    </div>
+
+    <p class="footer-note">A confirmation email has been sent to {{ user.email }}. Please show your Booking ID at the bus counter.</p>
+
+    <a href="{% url 'core:bus_list' %}" class="btn-cta">Book Another Trip</a>
+</div>
+
+<style>
+    /* Basic CSS for a clean confirmation screen */
+    .confirmation-container {
+        max-width: 700px;
+        margin: 40px auto;
+        padding: 30px;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+    .confirmation-header {
+        border-bottom: 2px solid var(--primary-color);
+        padding-bottom: 20px;
+        margin-bottom: 30px;
+    }
+    .success-icon {
+        font-size: 4em;
+        color: var(--primary-color, #28a745); /* Green checkmark */
+        margin-bottom: 10px;
+    }
+    .confirmation-header h2 {
+        color: #343a40;
+        margin: 0;
+    }
+    .reference {
+        color: #6c757d;
+        font-size: 1.1em;
+        margin-top: 5px;
+    }
+    .booking-details-card, .payment-summary-card {
+        text-align: left;
+        padding: 15px;
+        margin-bottom: 25px;
+        border: 1px solid #e9ecef;
+        border-radius: 6px;
+    }
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px dashed #f1f1f1;
+    }
+    .label {
+        font-weight: 500;
+        color: #6c757d;
+    }
+    .value {
+        font-weight: bold;
+        color: #343a40;
+    }
+    .highlight {
+        background-color: #f0f8ff; /* Light blue background for seat number */
+        border-radius: 4px;
+        padding: 10px;
+        margin: 10px 0;
+        border-bottom: none;
+    }
+    .seat-value {
+        font-size: 1.2em;
+        color: var(--accent-color, #ff5722);
+    }
+    .price-value {
+        color: #28a745; /* Green for paid amount */
+        font-size: 1.2em;
+    }
+    .status-paid {
+        color: var(--primary-color, #28a745);
+        font-weight: bold;
+    }
+    .footer-note {
+        font-size: 0.9em;
+        color: #6c757d;
+        margin-top: 30px;
+    }
+</style>
+{% endblock %}

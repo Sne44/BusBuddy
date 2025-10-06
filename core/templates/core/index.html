@@ -1,0 +1,19 @@
+{% extends 'base.html' %} 
+
+{% block content %}
+<main class="hero-section">
+    <div class="hero-content">
+        <a href="{% url 'core:bus_list' %}" class="btn-cta">Book Your Journey Now!</a>
+        
+    </div>
+</main>
+
+<section class="features">
+    <div class="feature-card">Fast Booking</div>
+    <div class="feature-card">Best Prices</div>
+    <div class="feature-card">24/7 Support</div>
+</section>
+
+<footer>
+</footer>
+{% endblock %}

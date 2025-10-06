@@ -1,0 +1,92 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BusBuddy | {% block title %}{% endblock %}</title>
+    
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <style>
+        /* Define your global CSS variables here if needed */
+        :root {
+            --primary-color: #ff5722; /* Orange for BusBuddy */
+            --accent-color: #d85c26; /* Blue */
+            --light-bg: #f8f9fa;
+        }
+
+        /* Basic styles for the navbar */
+        .navbar {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .navbar a:hover {
+            background-color: #89eb2d; /* Darker orange on hover */
+        }
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        .navbar-links {
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+    
+</head>
+<body>
+
+    <header>
+        <nav class="navbar">
+            <div class="navbar-links">
+                <a href="{% url 'core:home' %}" class="navbar-brand">BusBuddy</a>
+                <a href="{% url 'core:bus_list' %}">Buses & Booking</a>
+                
+                {# CRITICAL: LINK TO THE HISTORY PAGE FOR LOGGED-IN USERS #}
+                {% if user.is_authenticated %}
+                    <a href="{% url 'core:booking_history' %}">My Booking History</a> 
+                {% endif %}
+            </div>
+
+            <div class="navbar-links">
+                {% if user.is_authenticated %}
+                    {# Show username and Logout link #}
+                    <span style="padding: 8px 15px;">Welcome, {{ user.username }}</span>
+                    <a href="{% url 'logout' %}">Logout</a>
+                {% else %}
+                    {# Show Login and Signup links for guests #}
+                    <a href="{% url 'login' %}">Login</a>
+                    <a href="{% url 'core:signup' %}">Sign Up</a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        {% block content %}
+            {# Content from child templates will be inserted here #}
+        {% endblock content %}
+    </main>
+    
+    <footer>
+        <p style="text-align: center; margin-top: 40px; padding: 10px; background: var(--light-bg); color: #19de68;">
+            © 2025 BusBuddy Project. All rights reserved.
+        </p>
+    </footer>
+
+    </body>
+</html>
